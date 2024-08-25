@@ -18,9 +18,9 @@ const Pagination = ({ links }: { links: LinkType[]}) => {
           key={link.label}
           dangerouslySetInnerHTML={{ __html: link.label }}
           className={`inline-block py-2 px-3 rounded-lg text-xs ${
-            link.active ? 'bg-gray-950 text-gray-200' : 
+            link.active ? 'bg-gray-200 text-gray-600' : 
             !link.url ? 'text-gray-500 cursor-not-allowed' :
-            'hover:bg-gray-950'
+            'hover:bg-gray-100'
           }`}
         />
       ))}
