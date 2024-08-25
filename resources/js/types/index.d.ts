@@ -28,12 +28,20 @@ export interface UsersResponse {
         };
       };
 }
+export interface UserResponse {
+    success: true,
+    user: User
+}
 
 
-export interface usersResponse422 {
+export interface Response422 {
   success: string,
   message: string,
   fails: string[]
+}
+export interface Response404 {
+  success: string,
+  message: string,
 }
 
 

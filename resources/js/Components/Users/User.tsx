@@ -1,7 +1,9 @@
 import { User as UserType } from '@/types'
+import { Link } from '@inertiajs/react'
 
 const User = ({ user }: { user: UserType}) => {
   return (
+    <Link href={'users/'+user.id}>
     <div className=' border-[1px] border-black p-3 m-1 rounded-md flex justify-between'>
         <div className=' flex flex-col '>
             {user.name + ' ID: ' + user.id}
@@ -28,6 +30,7 @@ const User = ({ user }: { user: UserType}) => {
           With us since {user.email_verified_at?.slice(0, 10)}
         </div>
     </div>
+    </Link>
   )
 }
 

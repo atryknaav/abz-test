@@ -1,6 +1,6 @@
 import React from 'react';
 import { Head } from '@inertiajs/react';
-import { UsersResponse, usersResponse422 } from '@/types';
+import { UsersResponse, Response422, Response404 } from '@/types';
 import Guest from '@/Layouts/GuestLayout';
 import Pagination from '@/Components/Pagination';
 import User from '@/Components/Users/User';
@@ -8,12 +8,12 @@ import NavLink from '@/Components/NavLink';
 
 interface UsersProps {
     usersResponse: UsersResponse;
-    usersResponse422?: usersResponse422;
+    usersResponse422?: Response422;
+    usersResponse404?: Response404;
 }
 
-export default function Users({ usersResponse, usersResponse422 }: UsersProps) {
+export default function Users({ usersResponse, usersResponse422, usersResponse404 }: UsersProps) {
     const { users, page, count, total_pages, total_users, success } = usersResponse;
-    const error = usersResponse422;
 
     return (
         <Guest>
@@ -34,18 +34,32 @@ export default function Users({ usersResponse, usersResponse422 }: UsersProps) {
                                         </div>
                                     ))}
                                 </>
-                            ) : (
-                                error && (
+                            ) : 
+                                usersResponse422 ? (
                                     <div className="text-red-500">
-                                        <p>{error.message}</p>
-                                        <ul>
-                                            {Object.entries(error.fails).map(([key, message]) => (
-                                                <li key={key}>{message}</li>
-                                            ))}
-                                        </ul>
+                                        <p>{usersResponse422.message}</p>
+                                        {usersResponse422 === usersResponse422? (
+                                            <ul>
+                                                {Object.entries(usersResponse422.fails).map(([key, message]) => (
+                                                    <li key={key}>{message}</li>
+                                                ))}
+                                            </ul>
+                                        ) : null}
                                     </div>
+
+                                    )
+                                : usersResponse404 ? (
+                                    <div className="text-red-500">
+                                        <p>{usersResponse404!.message}</p>
+                                        
+                                    </div>
+
                                 )
-                            )}
+                                : 
+                                <div>
+                                    Undefined error
+                                </div>
+                            }
                         </div>
                         <form action={`/users?page=${page}&perPage=${count}`} method="get">
                             <label htmlFor="perPage">Users per page</label>

@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PositionController;
 
 
 Route::middleware('auth')->group(function () {
@@ -17,6 +18,8 @@ Route::middleware('guest')->group(function () {
     Route::get('/', fn() => Inertia::render('Guest/Welcome'));
     Route::get('/dashboard', fn() => Inertia::render('Guest/Dashboard'))->name('dashboard');
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
+    Route::get('/positions', [PositionController::class, 'index'])->name('positions.index');
 });
 
 require __DIR__.'/auth.php';
