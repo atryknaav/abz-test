@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Head } from '@inertiajs/react';
-import { UsersResponse } from '@/types';
+import { UsersResponse, usersResponse422 } from '@/types';
 import Guest from '@/Layouts/GuestLayout';
 import Pagination from '@/Components/Pagination';
 import User from '@/Components/Users/User';
+import NavLink from '@/Components/NavLink';
 
 interface UsersProps {
     usersResponse: UsersResponse;
+    usersResponse422?: usersResponse422;
 }
 
-export default function Users({ usersResponse }: UsersProps) {
+export default function Users({ usersResponse, usersResponse422 }: UsersProps) {
     const { users, page, count, total_pages, total_users, success } = usersResponse;
+    const error = usersResponse422;
 
     return (
         <Guest>
@@ -32,21 +35,33 @@ export default function Users({ usersResponse }: UsersProps) {
                                     ))}
                                 </>
                             ) : (
-                                <p className="text-red-500">Failed to fetch data.</p>
+                                error && (
+                                    <div className="text-red-500">
+                                        <p>{error.message}</p>
+                                        <ul>
+                                            {Object.entries(error.fails).map(([key, message]) => (
+                                                <li key={key}>{message}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )
                             )}
                         </div>
-                        <form action="/users" >
+                        <form action={`/users?page=${page}&perPage=${count}`} method="get">
                             <label htmlFor="perPage">Users per page</label>
                             <input
                                 id="perPage"
-                                name='perPage'
+                                name="perPage"
                                 type="number"
-                                className='m-2 p-2 rounded-md'
+                                className="m-2 p-2 rounded-md"
                                 defaultValue={count}
                             />
-                            <button type='submit'>Apply</button>
+                            <input type="text" className='hidden' name='page' value={page}/>
+                            <button type="submit">Apply</button>
                         </form>
-                        <Pagination links={users.meta.links} />
+                        {success ? (<Pagination perPage={count} links={users.meta.links} />) : (<NavLink href='/users?page=1&perPage=5' active={route().current('dashboard')}>
+                            Go to the first page
+                        </NavLink>)}
                     </div>
                 </div>
             </div>

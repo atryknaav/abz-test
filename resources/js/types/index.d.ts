@@ -30,6 +30,13 @@ export interface UsersResponse {
 }
 
 
+export interface usersResponse422 {
+  success: string,
+  message: string,
+  fails: string[]
+}
+
+
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
     auth: {
         user: User;
