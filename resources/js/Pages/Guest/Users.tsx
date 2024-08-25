@@ -1,33 +1,16 @@
+import React, { useState } from 'react';
 import { Head } from '@inertiajs/react';
-import { PageProps, User as UserType } from '@/types';
+import { UsersResponse } from '@/types';
 import Guest from '@/Layouts/GuestLayout';
 import Pagination from '@/Components/Pagination';
 import User from '@/Components/Users/User';
-import { useState, useEffect } from 'react';
 
 interface UsersProps {
-    users: {
-        data: UserType[];
-        meta: {
-            links: {
-                url: string | null;
-                label: string;
-                active: boolean;
-            }[];
-        };
-    };
+    usersResponse: UsersResponse;
 }
 
-export default function Users({ users }: UsersProps) {
-    const [perPage, setPerPage] = useState<number>(5);
-
-    useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const perPageParam = urlParams.get('perPage');
-        if (perPageParam) {
-            setPerPage(Number(perPageParam));
-        }
-    }, []);
+export default function Users({ usersResponse }: UsersProps) {
+    const { users, page, count, total_pages, total_users, success } = usersResponse;
 
     return (
         <Guest>
@@ -37,23 +20,31 @@ export default function Users({ users }: UsersProps) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6 text-gray-900">
-                            {users.data.map((user, index) => (
-                                <div key={index}>
-                                    <User user={user} />
-                                </div>
-                            ))}
+                            {success ? (
+                                <>
+                                    <p className="text-gray-500">Current Page: {page}</p>
+                                    <p className="text-gray-500">Total Users: {total_users}</p>
+                                    <p className="text-gray-500">Total Pages: {total_pages}</p>
+                                    {users.data.map((user, index) => (
+                                        <div key={index}>
+                                            <User user={user} />
+                                        </div>
+                                    ))}
+                                </>
+                            ) : (
+                                <p className="text-red-500">Failed to fetch data.</p>
+                            )}
                         </div>
-                        <form action="" method="GET">
+                        <form action="/users" >
                             <label htmlFor="perPage">Users per page</label>
                             <input
                                 id="perPage"
-                                name="perPage"
+                                name='perPage'
                                 type="number"
                                 className='m-2 p-2 rounded-md'
-                                value={perPage}
-                                onChange={(e) => setPerPage(Number(e.target.value))}
+                                defaultValue={count}
                             />
-                            <button type="submit" className='bg-blue-500 text-white p-2 rounded-md'>Apply</button>
+                            <button type='submit'>Apply</button>
                         </form>
                         <Pagination links={users.meta.links} />
                     </div>

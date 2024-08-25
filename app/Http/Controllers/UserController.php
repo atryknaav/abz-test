@@ -15,13 +15,36 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+       
         $perPage = $request->query('perPage', 5);
 
+        
         $perPage = is_numeric($perPage) ? (int)$perPage : 5;
+
 
         $users = User::paginate($perPage);
 
-        return Inertia::render('Guest/Users', ["users" => UserResource::collection($users)]);
+
+        $usersResponse = [
+            'success' => true,
+            'page' => $users->currentPage(),
+            'count' => $users->count(),
+            'total_pages' => $users->lastPage(),
+            'total_users' => $users->total(),
+            'links' => [
+                'next_url' => [
+                    'label' => 'Previous',
+                    'url' => $users->previousPageUrl(),
+                ],
+                'prev_url' => [
+                    'label' => 'Next',
+                    'url' => $users->nextPageUrl(),
+                ]
+            ],
+            'users' => UserResource::collection($users),
+        ];
+
+        return Inertia::render('Guest/Users', ['usersResponse' => $usersResponse]);
     }
 
 
