@@ -47,4 +47,8 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function position(){
+        return $this->belongsTo(Position::class, 'position_id');
+    }
 }

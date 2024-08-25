@@ -7,8 +7,10 @@ export interface User {
     photo: string;
     phone: string;
     position_id: number;
+    position: string;
     remember_token: string;
 }
+
 
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
     auth: {

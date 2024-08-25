@@ -13,12 +13,17 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::paginate(5);
+        $perPage = $request->query('perPage', 5);
 
-        return Inertia::render('Guest/Users', ["users"=> UserResource::collection($users)]);
+        $perPage = is_numeric($perPage) ? (int)$perPage : 5;
+
+        $users = User::paginate($perPage);
+
+        return Inertia::render('Guest/Users', ["users" => UserResource::collection($users)]);
     }
+
 
     /**
      * Show the form for creating a new resource.
