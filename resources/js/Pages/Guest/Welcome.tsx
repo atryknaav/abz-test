@@ -16,7 +16,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }: PageProps<
         
     >
         <Head title='Hi'/>
-
+        
         <div>
             Hi
         </div>

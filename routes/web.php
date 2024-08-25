@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -13,7 +14,10 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('guest')->group(function () {
-    Route::get('/', fn() => Inertia::render('Welcome'));
+    Route::get('/', fn() => Inertia::render('Guest/Welcome'));
+    Route::get('/dashboard', fn() => Inertia::render('Guest/Dashboard'))->name('dashboard');
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
 });
 
 require __DIR__.'/auth.php';
+require __DIR__.'/api.php';
