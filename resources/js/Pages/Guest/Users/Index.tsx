@@ -5,6 +5,7 @@ import Guest from '@/Layouts/GuestLayout';
 import Pagination from '@/Components/Pagination';
 import User from '@/Components/Users/User';
 import NavLink from '@/Components/NavLink';
+import RegistrationForm from '@/Components/Users/RegistrationForm';
 
 interface UsersProps {
     usersResponse: UsersResponse;
@@ -28,11 +29,14 @@ export default function Users({ usersResponse, usersResponse422, usersResponse40
                                     <p className="text-gray-500">Current Page: {page}</p>
                                     <p className="text-gray-500">Total Users: {total_users}</p>
                                     <p className="text-gray-500">Total Pages: {total_pages}</p>
-                                    {users.data.map((user, index) => (
-                                        <div key={index}>
-                                            <User user={user} />
-                                        </div>
-                                    ))}
+                                    <RegistrationForm />
+                                    <div className=' max-h-screen overflow-scroll'>
+                                        {users.data.map((user, index) => (
+                                            <div key={index}>
+                                                <User user={user} />
+                                            </div>
+                                        ))}
+                                    </div>
                                 </>
                             ) : 
                                 usersResponse422 ? (
