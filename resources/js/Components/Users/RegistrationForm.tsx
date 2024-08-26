@@ -1,9 +1,12 @@
 import React from 'react'
 
 const RegistrationForm = () => {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')!.getAttribute('content') || '';
+    
   return (
     <div className='flex justify-center'>
         <form action="/users" method="post" encType="multipart/form-data" className="flex flex-col gap-6 w-[60%] shadow-lg p-10 rounded-2xl mb-6">
+        <input type="hidden" name="_token" value={csrfToken} />
     <label htmlFor="name">Full name</label>
     <input 
         type="text" 

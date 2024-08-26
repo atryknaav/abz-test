@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Http\Requests\RegistrationRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserController extends Controller
@@ -31,7 +33,30 @@ class UserController extends Controller
     if (!is_numeric($page) || (int)$page < 1) {
         $fails['page'] = 'The page must be at least 1';
     }
-    if (!is_numeric($page) || (int)$page >  User::count()/$perPage ) {
+
+    if(!empty($fails))
+    return Inertia::render('Guest/Users/Index', [
+        'usersResponse' => [
+            'success' => false,
+            'page' => 1,
+            'count' => 1,
+            'total_pages' => 0,
+            'total_users' => 0,
+            'links' => [
+                'next_url' => null,
+                'prev_url' => null
+            ],
+            'users' => [],
+        ],
+        'usersResponse422' => [
+            'success' => false,
+            'message' => 'The page does not exist: the page number is too high',
+            'fails'=> $fails
+        ],
+    ]);
+
+
+    if ((int)$page >  User::count()/$perPage + $perPage) {
         $users = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 1);
 
         return Inertia::render('Guest/Users/Index', [
@@ -112,10 +137,60 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(RegistrationRequest $request)
+{
+    $validatedData = $request->validated();
+
+    $imgPath = null;
+    try {
+        if ($request->hasFile('photo')) {
+            $originalImagePath = $request->file('photo')->store('profile_images', 'public');
+            $this->resizeAndCompressImage(storage_path('app/public/' . $originalImagePath));
+            $imgPath = $originalImagePath;
+        }
+
+        $user = User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'photo' => $imgPath,
+            'phone'=>$validatedData['phone'],
+            'position_id'=>$validatedData['position_id'],
+            'email_verified_at'=>Carbon::now()
+        ]);
+        
+        \Log::info('User registered successfully: ' . $user->email);
+        return redirect('/users')->with('success', 'Registration successful.');
+
+    } catch (\Exception $e) {
+        \Log::error('Registration error: ' . $e->getMessage());
+        return redirect('/users')->withErrors('Registration failed. Please try again.');
     }
+}
+
+
+
+    protected function resizeAndCompressImage($imagePath)
+    {
+        try {
+            \Tinify\setKey(env('TINYPNG_API_KEY'));
+
+            $source = \Tinify\fromFile($imagePath);
+            
+            // Resize the image
+            $resized = $source->resize([
+                "method" => "cover",
+                "width" => 70,
+                "height" => 70
+            ]);
+            
+      
+            $resized->toFile($imagePath);
+        } catch (\Exception $e) {
+            \Log::error('TinyPNG error: ' . $e->getMessage());
+        }
+    }
+
+
 
     /**
      * Display the specified resource.
