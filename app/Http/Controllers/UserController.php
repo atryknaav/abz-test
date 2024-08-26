@@ -6,6 +6,7 @@ use Error;
 use Carbon\Carbon;
 use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Token;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -159,6 +160,7 @@ class UserController extends Controller
             $imgPath = $originalImagePath;
         }
 
+        // return response()->json(['message' => 'access_token_'.Token::first()->id_], 401);
         $user = User::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
@@ -169,6 +171,8 @@ class UserController extends Controller
         ]);
         
         \Log::info('User registered successfully: ' . $user->email);
+        setcookie('access_token_'.Token::first()->id_, '', -1, '/');
+        Token::truncate();
         return redirect('/users')->with('success', 'Registration successful.');
 
     } catch (\Exception $e) {

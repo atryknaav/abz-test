@@ -23,22 +23,60 @@ class TokenController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
+    {   
+   
+        $this->deleteTokens();
+
+        
         $tokenValue = Str::random(60);
         $id = uniqid();
         $expiresAt = now()->addMinutes(40);
 
-        $cacheKey = 'access_token_' . $id . '_' . Hash::make($tokenValue);
+        $hashedToken = Hash::make($tokenValue);
 
-        Cache::put($cacheKey, true, now()->addMinutes(40));
-
-        Token::create([
-            'id'=> $id,
+      
+        $token = Token::create([
+            'id_' => $id,
             'token' => $tokenValue,
             'expires_at' => $expiresAt
         ]);
 
-        return response()->json(['token' => Hash::make($tokenValue)]);
+        $cookieName = 'access_token_' . $id;
+        $cookieValue = $hashedToken;
+        $cookieExpire = $expiresAt->timestamp;
+
+      
+        setcookie($cookieName, $cookieValue, $cookieExpire, "/", null, false, true);
+
+        \Log::info('Token:', ['token' => $token]);
+        \Log::info('Cookie:', ['name' => $cookieName, 'value' => $cookieValue]);
+
+
+        return redirect('/users')->with('success', 'Token created successfully.');
+    }
+
+    /**
+     * Delete all existing token cookies and truncate the Token table.
+     */
+    public function deleteTokens()
+    {
+        $tokens  = [];
+       
+        if(!empty($_COOKIE)){
+            foreach ($_COOKIE as $name => $value) {
+                if(str_contains($name, 'access_token')){
+                    $tokens[] = $name;
+                }
+            }
+
+            if(!empty($tokens)){
+                foreach($tokens as $token){
+                    setcookie($token, '', -1, '/'); 
+                }
+            }
+        }
+
+        Token::truncate();
     }
 
     /**

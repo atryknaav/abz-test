@@ -58,8 +58,9 @@ const RegistrationForm = () => {
         Register user
     </button>                
 </form>
-    <form action="/token">
-        <button className=' bg-lime-400 m-3 p-3 text-gray-100 shadow-lg rounded-xl'>
+    <form action="/token" method='get'>
+        <input type="hidden" name="_token" value={csrfToken} />
+        <button type='submit' className=' bg-lime-400 m-3 p-3 text-gray-100 shadow-lg rounded-xl'>
             GET ACCESS
         </button>
     </form>

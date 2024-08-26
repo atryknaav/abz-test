@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PositionController;
+use App\Http\Middleware\VerifyTokenMiddleware;
 
 
 Route::middleware('auth')->group(function () {
@@ -15,6 +16,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('guest')->group(function () {
+    Route::post('users', [UserController::class, 'store'])->name('users.store')->middleware('token');
     Route::get('/', fn() => Inertia::render('Guest/Welcome'));
     Route::get('/dashboard', fn() => Inertia::render('Guest/Dashboard'))->name('dashboard');
     Route::get('/users', [UserController::class, 'index'])->name('users.index');

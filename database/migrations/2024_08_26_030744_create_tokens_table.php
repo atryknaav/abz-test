@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tokens', function (Blueprint $table) {
-            $table->string('id');
+            $table->string('id_', 100);
             $table->string('token');
             $table->timestamp('expires_at');
             $table->timestamps();
