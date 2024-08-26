@@ -108,7 +108,7 @@ class UserController extends Controller
     }
 
     // Fetch the users with the validated perPage and page values
-    $users = User::paginate((int)$perPage, ['*'], 'page', (int)$page);
+    $users = User::orderBy('id', 'desc')->paginate((int)$perPage, ['*'], 'page', (int)$page);
 
     return Inertia::render('Guest/Users/Index', [
         'usersResponse' => [
