@@ -20,27 +20,25 @@ class VerifyTokenMiddleware
                 if (strpos($name, 'access_token') !== false) {
                     $ckName = $name;
                     $tokenValue = $value;
-                    break; // Exit loop once we find the desired cookie
+                    break;
                 }
             }
         
             if ($ckName === null) {
-                // Collect all cookie names and values for debugging
                 $cookies = [];
                 foreach ($_COOKIE as $name => $value) {
                     $cookies[] = "$name: $value";
                 }
-                $cookiesStr = implode(', ', $cookies);
         
                 return response()->json([
-                    'message' => 'Unauthorized on cookie.',
+                    'message' => 'Unauthorized: you are not authorized for this action. The cookie does not exist. Click the green button to receive permissions.',
                 ], 401);
             }
 
             
         }
         else{
-            return response()->json(['message' => 'Unauthorized on cookie'], 401);
+            return response()->json(['message' => 'Unauthorized: you are not authorized for this action. The cookie does not exist.'], 401);
         }
 
         $id = str_replace('access_token_', '', $ckName);
@@ -53,12 +51,12 @@ class VerifyTokenMiddleware
             }
         }
         else{
-            return response()->json(['message' => 'Unauthorized: cookie does not exist in db'], 401);
+            return response()->json(['message' => 'Unauthorized: the token does not exist in the data base.'], 401);
 
         }
 
         if ($tokenRow->expires_at < now()) {
-            return response()->json(['message' => 'Unauthorized expired'], 401);
+            return response()->json(['message' => 'The token expired.'], 401);
         }
 
         return $next($request);

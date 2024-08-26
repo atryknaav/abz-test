@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\RegistrationRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -22,18 +23,17 @@ class UserController extends Controller
      */
     public function index(Request $request)
 {
-    // Fetch and validate 'perPage' and 'page' parameters
+    
     $perPage = $request->query('perPage', 5);
     $page = $request->query('page', 1);
 
     $fails = [];
 
-    // Validate 'perPage'
+
     if (!is_numeric($perPage) || (int)$perPage <= 0) {
         $fails['count'] = 'The count must be a positive integer.';
     }
 
-    // Validate 'page'
     if (!is_numeric($page) || (int)$page < 1 || (int)$page >  ceil(User::count()/$perPage) ) {
         $fails['page'] = 'The page must be at least 1 and not beyond the total amount o users.';
     }
@@ -83,7 +83,6 @@ class UserController extends Controller
         ]);
     }
 
-    // If there are validation errors, return them with an empty user set
     if (!empty($fails)) {
         $users = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 1);
 
@@ -128,14 +127,7 @@ class UserController extends Controller
 }
 
 
-    // public function access(Request $request){
 
-    //     $token = Str::random(60);
-
-    //     Cache::put('access_token_' . $token, true, now()->addMinutes(40));
-
-    //     return response()->json(['token' => $token]);
-    // }
 
     /**
      * Show the form for creating a new resource.
@@ -148,9 +140,36 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(RegistrationRequest $request)
+    public function store(Request $request)
 {
-    $validatedData = $request->validated();
+    $rules = [
+            'name' => 'required|string|min:2|max:60',
+            'email' => 'required|string|min:6|max:100',
+            'phone' => 'required|string|regex:/^\+380\d{9}$/',
+            'position_id' => 'required|integer|min:1',
+            'photo' => 'required|image|mimes:jpeg,jpg,png|dimensions:min_width=70,min_height=70',
+        
+    ];
+
+    $validator = Validator::make($request->all(), $rules);
+
+
+    if ($validator->fails()) {
+        return response()->json([
+            'message' => 'Wrong data entered. Validation failed.',
+            'errors' => $validator->errors()
+        ], 422);
+    }
+
+    if ($validator->passes()) {
+        if(!User::where('email', $request->email)->doesntExist() || !User::where('phone', $request->phone)->doesntExist())
+        return response()->json([
+            'message' => 'Wrong data entered. Validation failed. The user with this phone number or email already exists.',
+        ], 409);
+    }
+
+
+    $validatedData = $validator->validated();
 
     $imgPath = null;
     try {
@@ -160,7 +179,7 @@ class UserController extends Controller
             $imgPath = $originalImagePath;
         }
 
-        // return response()->json(['message' => 'access_token_'.Token::first()->id_], 401);
+        
         $user = User::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
@@ -177,7 +196,7 @@ class UserController extends Controller
 
     } catch (\Exception $e) {
         \Log::error('Registration error: ' . $e->getMessage());
-        return redirect('/users')->withErrors('Registration failed. Please try again.');
+        return response()->json(['Registration failed.'.$e->getMessage()]);
     }
 }
 
