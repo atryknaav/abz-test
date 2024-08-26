@@ -31,7 +31,7 @@ export default function Users({ usersResponse, usersResponse422, usersResponse40
                                     <p className="text-gray-500">Total Pages: {total_pages}</p>
                                     <RegistrationForm />
                                     <div className=' max-h-screen overflow-scroll'>
-                                        {users.data.map((user, index) => (
+                                        {users.data.slice().reverse().map((user, index) => (
                                             <div key={index}>
                                                 <User user={user} />
                                             </div>
