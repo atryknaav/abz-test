@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Error;
 use Carbon\Carbon;
 use App\Models\User;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\RegistrationRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -26,12 +29,12 @@ class UserController extends Controller
 
     // Validate 'perPage'
     if (!is_numeric($perPage) || (int)$perPage <= 0) {
-        $fails['count'] = 'The count must be a positive integer';
+        $fails['count'] = 'The count must be a positive integer.';
     }
 
     // Validate 'page'
-    if (!is_numeric($page) || (int)$page < 1) {
-        $fails['page'] = 'The page must be at least 1';
+    if (!is_numeric($page) || (int)$page < 1 || (int)$page >  ceil(User::count()/$perPage) ) {
+        $fails['page'] = 'The page must be at least 1 and not beyond the total amount o users.';
     }
 
     if(!empty($fails))
@@ -39,7 +42,7 @@ class UserController extends Controller
         'usersResponse' => [
             'success' => false,
             'page' => 1,
-            'count' => 1,
+            'count' => $perPage,
             'total_pages' => 0,
             'total_users' => 0,
             'links' => [
@@ -50,7 +53,7 @@ class UserController extends Controller
         ],
         'usersResponse422' => [
             'success' => false,
-            'message' => 'The page does not exist: the page number is too high',
+            'message' => 'The page does not exist: the page number is too high.',
             'fails'=> $fails
         ],
     ]);
@@ -63,7 +66,7 @@ class UserController extends Controller
             'usersResponse' => [
                 'success' => false,
                 'page' => 0,
-                'count' => $users->count(),
+                'count' => $perPage,
                 'total_pages' => 0,
                 'total_users' => 0,
                 'links' => [
@@ -111,7 +114,7 @@ class UserController extends Controller
         'usersResponse' => [
             'success' => true,
             'page' => $users->currentPage(),
-            'count' => $users->count(),
+            'count' => $perPage,
             'total_pages' => $users->lastPage(),
             'total_users' => $users->total(),
             'links' => [
@@ -124,7 +127,14 @@ class UserController extends Controller
 }
 
 
+    // public function access(Request $request){
 
+    //     $token = Str::random(60);
+
+    //     Cache::put('access_token_' . $token, true, now()->addMinutes(40));
+
+    //     return response()->json(['token' => $token]);
+    // }
 
     /**
      * Show the form for creating a new resource.

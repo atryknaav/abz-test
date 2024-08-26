@@ -4,8 +4,8 @@ const RegistrationForm = () => {
     const csrfToken = document.querySelector('meta[name="csrf-token"]')!.getAttribute('content') || '';
     
   return (
-    <div className='flex justify-center'>
-        <form action="/users" method="post" encType="multipart/form-data" className="flex flex-col gap-6 w-[60%] shadow-lg p-10 rounded-2xl mb-6">
+    <div className='flex items-center flex-col shadow-lg p-10 rounded-2xl mb-6'>
+        <form action="/users" method="post" encType="multipart/form-data" className="flex flex-col gap-6 w-[60%]">
         <input type="hidden" name="_token" value={csrfToken} />
     <label htmlFor="name">Full name</label>
     <input 
@@ -58,7 +58,11 @@ const RegistrationForm = () => {
         Register user
     </button>                
 </form>
-
+    <form action="/token">
+        <button className=' bg-lime-400 m-3 p-3 text-gray-100 shadow-lg rounded-xl'>
+            GET ACCESS
+        </button>
+    </form>
     </div>
   )
 }
