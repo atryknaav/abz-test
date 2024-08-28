@@ -15,12 +15,13 @@
         <!-- Scripts -->
         @routes
         @viteReactRefresh
-        @vite(['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"])
+        @livewireStyles
+        @vite('resources/js/app.js')
         @inertiaHead
         
     </head>
     <body class="font-sans antialiased">
         @inertia
-        <script src="{{ mix('/js/app.js') }}"></script> 
+        <!-- <script src="{{ mix('/js/app.js') }}"></script>  -->
     </body>
 </html>
