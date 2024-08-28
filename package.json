@@ -4,7 +4,7 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build",
-        "start": "node --env-file=.env dist/index.js"
+        "postinstall": "npm run prod"
     },
     "devDependencies": {
         "@headlessui/react": "^2.0.0",
