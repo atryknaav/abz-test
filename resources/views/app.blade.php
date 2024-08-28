@@ -14,10 +14,9 @@
 
         <!-- Scripts -->
         @routes
-        @viteReactRefresh
-        @livewireStyles
-        @inertiaHead
         @vite('resources/js/app.tsx')
+        @inertiaHead
+
         
     </head>
     <body class="font-sans antialiased">
