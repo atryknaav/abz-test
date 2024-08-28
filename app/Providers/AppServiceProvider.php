@@ -24,8 +24,5 @@ class AppServiceProvider extends ServiceProvider
             return base_path().'/../public_html';
         });
 
-        Blade::directive('viteDefer', function ($expression) {
-            return "<?php echo '<script type=\"module\" src=\"' . Vite::asset($expression) . '\" defer></script>'; ?>";
-        });
     }
 }
