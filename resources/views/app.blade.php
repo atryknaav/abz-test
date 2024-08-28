@@ -21,5 +21,6 @@
     </head>
     <body class="font-sans antialiased">
         @inertia
+        <script src="{{ mix('/js/app.js') }}"></script> 
     </body>
 </html>
