@@ -14,7 +14,7 @@
 
         <!-- Scripts -->
         @routes
-        @vite('resources/js/app.tsx')
+        @vite(['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"])
         @inertiaHead
 
         
