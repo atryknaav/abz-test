@@ -15,7 +15,7 @@
         <!-- Scripts -->
         @routes
         @viteReactRefresh
-        @viteDefer(['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"])
+        @viteDefer(['resources/js/app.tsx']);
         @inertiaHead
 
         
