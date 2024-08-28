@@ -20,9 +20,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->app->bind('path.public', function() {
-            return base_path().'/../public_html';
-        });
+        if(config('app.env') === 'production') {
+            \URL::forceScheme('https');
+         }
 
     }
 }

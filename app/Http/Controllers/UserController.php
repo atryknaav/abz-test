@@ -24,17 +24,17 @@ class UserController extends Controller
     public function index(Request $request)
 {
     
-    $perPage = $request->query('perPage', 5);
+    $count = $request->query('count', 5);
     $page = $request->query('page', 1);
 
     $fails = [];
 
 
-    if (!is_numeric($perPage) || (int)$perPage <= 0) {
+    if (!is_numeric($count) || (int)$count <= 0) {
         $fails['count'] = 'The count must be a positive integer.';
     }
 
-    if (!is_numeric($page) || (int)$page < 1 || (int)$page >  ceil(User::count()/$perPage) ) {
+    if (!is_numeric($page) || (int)$page < 1 || (int)$page >  ceil(User::count()/$count) ) {
         $fails['page'] = 'The page must be at least 1 and not beyond the total amount o users.';
     }
 
@@ -43,7 +43,7 @@ class UserController extends Controller
         'usersResponse' => [
             'success' => false,
             'page' => 1,
-            'count' => $perPage,
+            'count' => $count,
             'total_pages' => 0,
             'total_users' => 0,
             'links' => [
@@ -60,14 +60,14 @@ class UserController extends Controller
     ]);
 
 
-    if ((int)$page >  User::count()/$perPage + $perPage) {
+    if ((int)$page >  User::count()/$count + $count) {
         $users = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 1);
 
         return Inertia::render('Guest/Users/Index', [
             'usersResponse' => [
                 'success' => false,
                 'page' => 0,
-                'count' => $perPage,
+                'count' => $count,
                 'total_pages' => 0,
                 'total_users' => 0,
                 'links' => [
@@ -90,7 +90,7 @@ class UserController extends Controller
             'usersResponse' => [
                 'success' => false,
                 'page' => 0,
-                'count' => $perPage,
+                'count' => $count,
                 'total_pages' => 0,
                 'total_users' => 0,
                 'links' => [
@@ -107,14 +107,14 @@ class UserController extends Controller
         ]);
     }
 
-    // Fetch the users with the validated perPage and page values
-    $users = User::orderBy('id', 'desc')->paginate((int)$perPage, ['*'], 'page', (int)$page);
+    // Fetch the users with the validated count and page values
+    $users = User::orderBy('id', 'desc')->paginate((int)$count, ['*'], 'page', (int)$page);
 
     return Inertia::render('Guest/Users/Index', [
         'usersResponse' => [
             'success' => true,
             'page' => $users->currentPage(),
-            'count' => $perPage,
+            'count' => $count,
             'total_pages' => $users->lastPage(),
             'total_users' => $users->total(),
             'links' => [

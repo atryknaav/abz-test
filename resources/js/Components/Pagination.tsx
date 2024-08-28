@@ -9,17 +9,17 @@ interface LinkType {
 
 interface PaginationProps {
     links: LinkType[];
-    perPage: number; 
+    count: number; 
 }
 
-const Pagination = ({ links, perPage }: PaginationProps) => {
+const Pagination = ({ links, count }: PaginationProps) => {
 
   return (
       <nav className="text-center mt-4">
           {links.map(link => (
               <Link
                   preserveScroll
-                  href={`${link.url}&perPage=${perPage}`}
+                  href={`${link.url}&count=${count}`}
                   key={link.label}
                   dangerouslySetInnerHTML={{ __html: link.label }}
                   className={`inline-block py-2 px-3 rounded-lg text-xs ${

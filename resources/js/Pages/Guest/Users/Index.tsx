@@ -65,11 +65,11 @@ export default function Users({ usersResponse, usersResponse422, usersResponse40
                                 </div>
                             }
                         </div>
-                        <form action={`/users?page=${page}&perPage=${count}`} method="get">
-                            <label htmlFor="perPage">Users per page</label>
+                        <form action={`/users?page=${page}&count=${count}`} method="get">
+                            <label htmlFor="count">Users per page</label>
                             <input
-                                id="perPage"
-                                name="perPage"
+                                id="count"
+                                name="count"
                                 type="number"
                                 className="m-2 p-2 rounded-md"
                                 defaultValue={count}
@@ -77,7 +77,7 @@ export default function Users({ usersResponse, usersResponse422, usersResponse40
                             <input type="text" className='hidden' name='page' value={page}/>
                             <button type="submit">Apply</button>
                         </form>
-                        {success ? (<Pagination perPage={count} links={users.meta.links} />) : (<NavLink href='/users?page=1&perPage=5' active={route().current('dashboard')}>
+                        {success ? (<Pagination count={count} links={users.meta.links} />) : (<NavLink href='/users?page=1&count=5' active={route().current('dashboard')}>
                             Go to the first page
                         </NavLink>)}
                     </div>
