@@ -4,7 +4,8 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build",
-        "postinstall": "npm run prod"
+        "postinstall": "npm run prod",
+         "prod": "npm run build"
     },
     "devDependencies": {
         "@headlessui/react": "^2.0.0",
