@@ -1,0 +1,1 @@
+import{j as e}from"./app-DaGN1_yS.js";import{G as d}from"./GuestLayout-DSB6pX06.js";const a=({positions:s})=>e.jsx(d,{children:e.jsx("div",{children:s.map(r=>e.jsxs("div",{className:" border-2 m-3 rounded-xl p-3",children:[e.jsxs("p",{children:["ID: ",r.id]}),e.jsxs("p",{children:["Name: ",r.name]})]},r.id))})});export{a as default};

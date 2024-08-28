@@ -1,0 +1,1 @@
+import{j as e,Y as r}from"./app-DaGN1_yS.js";import{G as i}from"./GuestLayout-DSB6pX06.js";function l({auth:s,laravelVersion:t,phpVersion:o}){return e.jsxs(i,{children:[e.jsx(r,{title:"Hi"}),e.jsx("div",{children:"Hi"})]})}export{l as default};
