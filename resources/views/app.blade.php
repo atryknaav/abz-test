@@ -16,7 +16,7 @@
         @routes
         @viteReactRefresh
         @livewireStyles
-        @vite('resources/js/app.js')
+        @vite('resources/js/app.tsx')
         @inertiaHead
         
     </head>
