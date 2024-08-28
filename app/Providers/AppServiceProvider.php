@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,6 +22,10 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind('path.public', function() {
             return base_path().'/../public_html';
+        });
+
+        Blade::directive('viteDefer', function ($expression) {
+            return "<?php echo '<script type=\"module\" src=\"' . Vite::asset($expression) . '\" defer></script>'; ?>";
         });
     }
 }
