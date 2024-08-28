@@ -17,12 +17,11 @@
         @viteReactRefresh
         @livewireStyles
         @inertiaHead
+        @vite('resources/js/app.tsx')
         
     </head>
     <body class="font-sans antialiased">
         @inertia
-        @livewireStyles
-        @vite('resources/js/app.tsx')
 
     </body>
 </html>
