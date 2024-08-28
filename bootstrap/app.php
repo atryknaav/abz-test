@@ -18,8 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
             
         ]);
         $middleware->alias([
-            'token' => VerifyTokenMiddleware::class
+            'token' => VerifyTokenMiddleware::class,
+     
         ]);
+        $middleware->trustProxies(at: '*');
+        
 
         //
     })
