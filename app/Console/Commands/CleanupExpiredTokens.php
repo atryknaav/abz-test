@@ -28,5 +28,6 @@ class CleanupExpiredTokens extends Command
     {
         Token::where('expires_at', '<', now())->delete();
         $this->info('Expired tokens cleaned up successfully.');
+        
     }
 }
